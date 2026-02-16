@@ -1,0 +1,2 @@
+[console_scripts]
+export-config = ennovo_compost_widget.app_config:export

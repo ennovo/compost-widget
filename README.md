@@ -1,80 +1,159 @@
+# Ennovo Compost Widget
 
-# Doover App Template
+**Monitors composting facility sensor data and displays real-time temperature, moisture, and oxygen metrics with an interactive diagram.**
 
-<img src="https://doover.com/wp-content/uploads/Doover-Logo-Landscape-Navy-padded-small.png" alt="App Icon" style="max-width: 300px;">
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/ennovo/compost-widget)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/ennovo/compost-widget/blob/main/LICENSE)
 
-**A ready template for a Doover Application**
-
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/getdoover/ennovo-compost-widget)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/getdoover/ennovo-compost-widget/blob/main/LICENSE)
-
-[Getting Started](#-getting-started) • [Configuration](#configuration) • [Developer](https://github.com/getdoover/ennovo-compost-widget/blob/main/DEVELOPMENT.md) • [Need Help?](#need-help)
+[Getting Started](#getting-started) | [Configuration](#configuration) | [Widget UI](#widget-ui-elements) | [How It Works](#how-it-works) | [Need Help?](#need-help)
 
 <br/>
 
-## 📖 Overview
+## Overview
 
-A ready-to-use template for building Doover applications. This template provides the essential structure and configuration needed to quickly get started with app development on the Doover platform.
+The Ennovo Compost Widget is a Doover processor application that provides a rich visual dashboard for monitoring composting facility operations. It renders an interactive diagram of the composting system with real-time sensor overlays, giving operators an at-a-glance view of critical environmental conditions inside the composter.
+
+The widget displays a composting facility diagram as its background and overlays live sensor readings for temperature, oxygen, and moisture directly on top of the relevant areas of the diagram. An animated fan indicator shows whether the aeration fan is currently running, providing immediate visual feedback on the facility's ventilation status.
+
+This application is designed for composting facility operators and environmental engineers who need to monitor composting conditions in real time without navigating through multiple data screens. By combining all key metrics into a single visual widget, it reduces the time needed to assess facility health and identify potential issues.
+
+### Features
+
+- Real-time temperature monitoring with degree Celsius display
+- Live oxygen level percentage overlay on the compost pile area
+- Moisture content percentage display for composting material
+- Animated fan indicator that spins when the aeration fan is running and stops when it is off
+- Interactive composting facility diagram as the widget background
+- Auto-expanding widget that opens by default on page load
+- Responsive layout that scales to fit any container width
 
 <br/>
 
-## 🚀 Getting Started
+## Getting Started
 
-### How to Use
+### Prerequisites
 
-#### Quick Start Guide
+1. A Doover platform account with access to deploy processor applications
+2. A composting facility agent configured on the Doover platform
+3. Sensor data being published to the agent's `ui_state` channel with `temperature`, `oxygen`, `moisture`, and `fan_running` values under the `EnnovoCompostWidget` children
 
-This Doover App can be managed via the Doover CLI, and installed quickly onto devices through the Doover platform.
+### Installation
 
-### Configuration
+1. Deploy the `ennovo_compost_widget` processor to your Doover agent through the platform's app management interface
+2. The processor will automatically register the widget component and push the UI state on deployment
 
-#### Settings Overview
+### Quick Start
+
+1. Add the Ennovo Compost Widget app to your agent via the Doover platform
+2. Once deployed, the processor subscribes to the `deployment_config` channel and automatically pushes the widget entry to `ui_state`
+3. The widget will appear in your agent's UI, expanded by default, displaying sensor data as it arrives
+
+<br/>
+
+## Configuration
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **Setting Name 1** | What this setting controls | `default value` |
-| **Setting Name 2** | What this setting controls | `default value` |
+| **Channel Subscription** | The name of the channel to subscribe to for triggering aggregate updates | `deployment_config` |
+
+The processor uses a single configuration option that controls which channel it subscribes to. In most cases, the default value of `deployment_config` is correct and does not need to be changed. The subscription ensures the processor is notified when the agent is deployed or reconfigured, at which point it pushes the widget's UI state.
+
+### Example Configuration
+
+```json
+{
+  "dv_proc_subscriptions": "deployment_config"
+}
+```
 
 <br/>
 
-## 🔗 Integrations
+## Widget UI Elements
 
-### Tags
+The Ennovo Compost Widget renders a visual diagram with sensor data overlays. It does not use the standard Doover UI elements (Variables, Parameters, Actions). Instead, it reads values from the `ui_state` channel's `EnnovoCompostWidget.children` and renders them as positioned badges on the facility diagram.
 
-This app may expose some tags:
+### Sensor Overlays
 
-| Setting | Description |
-|---------|-------------|
-| **Tag 1** | What this tag does |
-| **Tag 2** | Waht this tag does |
+| Element | Description | Unit | Position |
+|---------|-------------|------|----------|
+| **Temperature** | Current temperature inside the compost pile | Degrees Celsius | Upper compost pile area |
+| **Oxygen** | Current oxygen concentration in the compost pile | Percentage (%) | Middle compost pile area |
+| **Moisture** | Current moisture content of the composting material | Percentage (%) | Lower compost pile area |
+| **Fan Running** | Whether the aeration fan is currently operating | Boolean (true/false) | Fan area on the left side of the diagram |
+
+### Visual Components
+
+| Component | Description |
+|-----------|-------------|
+| **Composter Diagram** | Background image showing the full composting facility layout |
+| **Inner Fan** | Overlay image of the fan blades, positioned over the blower area; animates with a continuous spin when the fan is running |
+| **Sensor Badges** | Semi-transparent dark overlay badges displaying the label and current value for each sensor reading |
+
+### Expected `ui_state` Data Shape
+
+The widget expects sensor data to be published to the agent's `ui_state` channel under the `EnnovoCompostWidget` children. Each value can be either a plain value or a `{ type: "uiVariable", value: X }` object:
+
+```json
+{
+  "state": {
+    "children": {
+      "EnnovoCompostWidget": {
+        "children": {
+          "temperature": 65.2,
+          "oxygen": 18.5,
+          "moisture": 55.0,
+          "fan_running": true
+        }
+      }
+    }
+  }
+}
+```
 
 <br/>
 
-This app works seamlessly with:
+## How It Works
 
-- **🔌 Integration 1**: Brief description of how they work together
-- **🔌 Integration 2**: Brief description of how they work together
-
-<br/>
-
-### Need Help?
-
-- 📧 Email: support@doover.com
-- 📖 [Doover Documentation](https://docs.doover.com)
-- 👨‍💻 [App Developer Documentation](https://github.com/getdoover/ennovo-compost-widget/blob/main/DEVELOPMENT.md)
+1. **Deployment trigger**: When the app is deployed to an agent, the `deployment_config` aggregate is updated, which triggers the processor's `on_aggregate_update` handler via its channel subscription.
+2. **UI state registration**: The processor pushes a `RemoteComponent` entry for `EnnovoCompostWidget` to the agent's `ui_state` channel, registering the widget with the Doover UI interpreter.
+3. **Default-open patch**: The processor patches the `ui_state` aggregate to set `defaultOpen: true` on the widget, so it appears expanded (not collapsed) when the agent page loads.
+4. **Widget rendering**: The front-end widget component loads the composting facility diagram as its background image and positions the fan overlay image on the blower area of the diagram.
+5. **Live data display**: The widget reads `temperature`, `oxygen`, `moisture`, and `fan_running` values from the `ui_state` channel's `EnnovoCompostWidget.children` and renders them as overlay badges on the diagram. Values are formatted to one decimal place with their respective units.
+6. **Fan animation**: When `fan_running` is `true`, a CSS animation continuously rotates the fan image. When `false`, the animation pauses and the fan appears stationary.
 
 <br/>
 
-## 🔄 Version History
+## Integrations
 
-### v1.0.0 (Current)
-- 🎉 Initial release
-- ✨ Feature 1 added
-- ✨ Feature 2 added
-- 🐛 Bug fixes
+This widget works with:
+
+- **Doover Platform** -- Runs as a processor application within the Doover cloud ecosystem
+- **Doover UI Interpreter** -- Registers as a `RemoteComponent` so the widget is rendered in the agent's dashboard
+- **Composting Facility Sensors** -- Consumes temperature, oxygen, and moisture sensor data published to the agent's `ui_state` channel
+- **Aeration Fan Controller** -- Reads the `fan_running` status to visually indicate fan operation
 
 <br/>
 
-## 📄 License
+## Need Help?
 
-This app is licensed under the [Apache License 2.0](https://github.com/getdoover/ennovo-compost-widget/blob/main/LICENSE).
+- Email: support@doover.com
+- [Doover Documentation](https://docs.doover.com)
+- [App Developer Documentation](https://github.com/ennovo/compost-widget/blob/main/DEVELOPMENT.md)
+
+<br/>
+
+## Version History
+
+### v0.1.0 (Current)
+- Initial release
+- Real-time temperature, oxygen, and moisture sensor display
+- Interactive composting facility diagram with sensor badge overlays
+- Animated fan indicator reflecting live aeration fan status
+- Auto-expanding widget on page load
+- Responsive layout scaling to container width
+
+<br/>
+
+## License
+
+This app is licensed under the [Apache License 2.0](https://github.com/ennovo/compost-widget/blob/main/LICENSE).

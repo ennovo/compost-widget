@@ -1,51 +1,65 @@
 {
     "ennovo_compost_widget": {
         "name": "ennovo_compost_widget",
-        "display_name": "ennovo-compost-widget",
-        "type": "DEV",
-        "visibility": "PUB",
+        "display_name": "Ennovo Compost Widget",
+        "type": "PRO",
+        "visibility": "PRI",
         "allow_many": true,
         "description": "Monitors composting facility sensor data and displays real-time temperature, moisture, and Oxygen metrics",
         "long_description": "README.md",
         "depends_on": [],
-        "owner_org_key": "FIX-ME",
-        "image_name": "ghcr.io/getdoover/ennovo-compost-widget:main",
-        "container_registry_profile_key": "FIX-ME",
-        "build_args": "--platform linux/amd64,linux/arm64",
+        "handler": "src.ennovo_compost_widget.handler",
+        "lambda_config": {
+            "Runtime": "python3.13",
+            "Timeout": 300,
+            "MemorySize": 128,
+            "Handler": "src.ennovo_compost_widget.handler"
+        },
+        "organisation_id": 93952080091347467,
+        "key": null,
+        "owner_org_id": 93952080091347467,
+        "code_repo_id": null,
+        "container_registry_profile_id": null,
+        "repo_branch": "main",
+        "image_name": null,
+        "icon_url": "",
+        "staging_config": {},
+        "export_config_command": null,
+        "run_command": null,
+        "lambda_arn": null,
         "config_schema": {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "$id": "",
             "title": "Application Config",
             "type": "object",
             "properties": {
-                "digital_outputs_enabled": {
-                    "title": "Digital Outputs Enabled",
-                    "x-name": "digital_outputs_enabled",
+                "dv_proc_subscriptions": {
+                    "title": "Channel Subscription",
+                    "x-name": "dv_proc_subscriptions",
                     "x-hidden": false,
-                    "type": "boolean",
-                    "default": true
-                },
-                "a_funny_message": {
-                    "title": "A Funny Message",
-                    "x-name": "a_funny_message",
-                    "x-hidden": false,
-                    "type": "string"
-                },
-                "simulator_app_key": {
-                    "format": "doover-application",
-                    "title": "Simulator App Key",
-                    "x-name": "simulator_app_key",
-                    "x-hidden": false,
-                    "type": "string",
-                    "description": "The app key for the simulator"
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "x-required": false,
+                    "description": "The name of the channel to subscribe to",
+                    "default": "deployment_config",
+                    "x-position": 0
                 }
             },
             "additionalElements": true,
-            "required": [
-                "a_funny_message",
-                "simulator_app_key"
-            ]
+            "required": []
         },
-        "organisation_id": "FIX-ME"
+        "banner_url": null,
+        "id": "147842362360495628"
+    },
+    "file_deployments": {
+        "files": [
+            {
+                "name": "ennovo_compost_widget",
+                "file_dir": "assets/EnnovoCompostWidget.js",
+                "mime_type": "text/javascript"
+            }
+        ]
     }
 }
