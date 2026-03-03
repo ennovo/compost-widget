@@ -1,8 +1,10 @@
 import base64
+import io
 import json
 import logging
 import os
 import time
+import sys
 from datetime import datetime, timedelta, timezone
 
 from typing import Any
@@ -29,6 +31,7 @@ log = logging.getLogger(__name__)
 DEFAULT_DATA_ENDPOINT = "https://data.doover.com/api"
 DEFAULT_OFFLINE_AFTER = 60 * 60  # 1 hour
 
+console_handler = logging.StreamHandler(sys.stdout)
 
 class Application:
     def __init__(self, config: Schema | None):
@@ -48,6 +51,12 @@ class Application:
         self.ui_manager: UIManager = None
         self._tag_values: dict[str, Any] = None
         self._connection_config: dict[str, Any] = None
+        
+        self.log_capture_string = io.StringIO()
+        self.string_stream_handler = logging.StreamHandler(self.log_capture_string)
+        logging.getLogger().addHandler(self.string_stream_handler)
+        logging.getLogger().addHandler(console_handler)
+
         self._record_tag_update: bool = True
 
     async def _setup(self, initial_payload: dict[str, Any]):
@@ -128,6 +137,9 @@ class Application:
 
         # Store the deployment config for later use
         self.received_deployment_config = data["deployment_config"]
+        self.ui_manager.set_display_name(
+            self.received_deployment_config.get("APP_DISPLAY_NAME")
+        )
 
     async def _close(self):
         await self.api.close()

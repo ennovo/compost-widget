@@ -5,11 +5,11 @@ FILE_CHANNEL = "ennovo_compost_widget"
 
 
 class EnnovoCompostWidgetUI:
-    def __init__(self):
+    def __init__(self, position=None):
         self.widget = RemoteComponent(
             name=WIDGET_NAME,
             display_name=WIDGET_NAME,
-            component_url=FILE_CHANNEL,
+            component_url=FILE_CHANNEL
         )
 
     def fetch(self):

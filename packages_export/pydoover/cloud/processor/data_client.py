@@ -27,6 +27,7 @@ class DooverData:
         self.organisation_id = None
         self.base_url = base_url
         self.session: aiohttp.ClientSession = None
+        self._token: str | None = None
 
         self.has_persistent_connection = lambda: False
         self.is_processor_v2 = True
@@ -42,9 +43,13 @@ class DooverData:
             await self.close()
 
         self.session = aiohttp.ClientSession()
+        if self._token:
+            self.session.headers["Authorization"] = f"Bearer {self._token}"
 
     def set_token(self, token: str):
-        self.session.headers["Authorization"] = f"Bearer {token}"
+        self._token = token
+        if self.session and not self.session.closed:
+            self.session.headers["Authorization"] = f"Bearer {token}"
 
     async def close(self):
         if self.session:
@@ -73,8 +78,21 @@ class DooverData:
 
         log.debug(f"Starting request: {method} {endpoint} (org_id={org_id})")
 
+        def _session_broken() -> bool:
+            if not self.session or self.session.closed:
+                return True
+            connector = self.session.connector
+            return connector is None or connector.closed
+
         for attempt in range(max_retries):
             try:
+                if _session_broken():
+                    log.warning(
+                        f"Session/connector closed before request. Reinitialising "
+                        f"session for {method} {endpoint} attempt={attempt + 1}/{max_retries}"
+                    )
+                    await self.setup()
+
                 async with self.session.request(
                     method, endpoint, **kwargs, headers=headers
                 ) as resp:
@@ -120,6 +138,15 @@ class DooverData:
                         resp.raise_for_status()
 
             except aiohttp.ClientError as e:
+                if _session_broken() or (
+                    isinstance(e, aiohttp.ClientConnectionError)
+                    and "connector is closed" in str(e).lower()
+                ):
+                    log.warning(
+                        f"Detected closed session/connector during request. "
+                        f"Reinitialising session for {method} {endpoint}."
+                    )
+                    await self.setup()
                 log.info(
                     f"Client error on {method} {endpoint}: "
                     f"{str(e)} attempt={attempt + 1}/{max_retries}",
@@ -170,6 +197,7 @@ class DooverData:
         before: datetime | None = None,
         after: datetime | None = None,
         chunk_size: int | None = None,
+        field_names: list[str] = None,
     ) -> list[Message]:
         before = generate_snowflake_id_at(before) if before else None
         after = generate_snowflake_id_at(after) if after else None
@@ -186,6 +214,7 @@ class DooverData:
                     organisation_id,
                     limit=chunk_size,
                     after=after,
+                    field_names=field_names,
                 )
                 log.debug(f"Received {len(messages)} messages")
                 for message in messages:
@@ -198,10 +227,10 @@ class DooverData:
                     break
                 after = int(messages[-1].id)
 
-            return [Message.from_dict(m) for m in all_messages]
+            return all_messages
 
         return await self._get_channel_messages(
-            agent_id, channel_name, organisation_id, limit, before, after
+            agent_id, channel_name, organisation_id, limit, before, after, field_names
         )
 
     async def _get_channel_messages(
@@ -212,6 +241,7 @@ class DooverData:
         limit: int = None,
         before: datetime = None,
         after: datetime = None,
+        field_names: list[str] = None,
     ) -> list[Message]:
         params = {}
         if limit:
@@ -220,8 +250,10 @@ class DooverData:
             params["before"] = before
         if after:
             params["after"] = after
+        if field_names:
+            params["field_name"] = field_names
 
-        query = f"?{urlencode(params)}" if params else ""
+        query = f"?{urlencode(params, doseq=True)}" if params else ""
         url = (
             f"{self.base_url}/agents/{agent_id}/channels/{channel_name}/messages{query}"
         )
@@ -242,9 +274,16 @@ class DooverData:
         files: list[tuple[str, bytes, str]] = None,
         replace: bool = False,
         organisation_id: int = None,
+        allow_invoking_channel: bool = False,
     ):
+        # this allow_invoking_channel parameter is pretty dangerous,
         if channel_name == self._invoking_channel_name:
-            raise RuntimeError("Cannot publish to the invoking channel.")
+            if allow_invoking_channel:
+                log.warning(
+                    "Publishing to invoking channel with override to allow. Be careful - this will cause recursion issues if not handled correctly."
+                )
+            else:
+                raise RuntimeError("Cannot publish to the invoking channel.")
 
         operation = "PUT" if replace else "PATCH"
         url = f"{self.base_url}/agents/{agent_id}/channels/{channel_name}/aggregate"

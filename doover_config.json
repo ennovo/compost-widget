@@ -45,6 +45,20 @@
                     "description": "The name of the channel to subscribe to",
                     "default": "deployment_config",
                     "x-position": 0
+                },
+                "dv-app-position": {
+                    "title": "Position",
+                    "x-name": "dv-app-position",
+                    "x-hidden": false,
+                    "type": [
+                        "integer",
+                        "null"
+                    ],
+                    "x-required": false,
+                    "description": "Position of Application in UI Structure. Smaller numbers are closer to the top.",
+                    "default": 50,
+                    "x-position": 1,
+                    "minimum": 0
                 }
             },
             "additionalElements": true,

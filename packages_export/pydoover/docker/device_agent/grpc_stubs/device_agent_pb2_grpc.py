@@ -55,6 +55,11 @@ class deviceAgentStub(object):
                 request_serializer=grpc__stubs_dot_device__agent__pb2.ChannelSubscriptionRequest.SerializeToString,
                 response_deserializer=grpc__stubs_dot_device__agent__pb2.ChannelSubscriptionResponse.FromString,
                 _registered_method=True)
+        self.ChannelEventSubscription = channel.unary_stream(
+                '/device_agent.deviceAgent/ChannelEventSubscription',
+                request_serializer=grpc__stubs_dot_device__agent__pb2.ChannelEventSubscriptionRequest.SerializeToString,
+                response_deserializer=grpc__stubs_dot_device__agent__pb2.ChannelEventSubscriptionResponse.FromString,
+                _registered_method=True)
         self.WriteToChannel = channel.unary_unary(
                 '/device_agent.deviceAgent/WriteToChannel',
                 request_serializer=grpc__stubs_dot_device__agent__pb2.ChannelWriteRequest.SerializeToString,
@@ -69,6 +74,26 @@ class deviceAgentStub(object):
                 '/device_agent.deviceAgent/GetTempAPIToken',
                 request_serializer=grpc__stubs_dot_device__agent__pb2.TempAPITokenRequest.SerializeToString,
                 response_deserializer=grpc__stubs_dot_device__agent__pb2.TempAPITokenResponse.FromString,
+                _registered_method=True)
+        self.GetTurnCredential = channel.unary_unary(
+                '/device_agent.deviceAgent/GetTurnCredential',
+                request_serializer=grpc__stubs_dot_device__agent__pb2.TurnCredentialRequest.SerializeToString,
+                response_deserializer=grpc__stubs_dot_device__agent__pb2.TurnCredentialResponse.FromString,
+                _registered_method=True)
+        self.CreateMessage = channel.unary_unary(
+                '/device_agent.deviceAgent/CreateMessage',
+                request_serializer=grpc__stubs_dot_device__agent__pb2.CreateMessageRequest.SerializeToString,
+                response_deserializer=grpc__stubs_dot_device__agent__pb2.CreateMessageResponse.FromString,
+                _registered_method=True)
+        self.UpdateMessage = channel.unary_unary(
+                '/device_agent.deviceAgent/UpdateMessage',
+                request_serializer=grpc__stubs_dot_device__agent__pb2.UpdateMessageRequest.SerializeToString,
+                response_deserializer=grpc__stubs_dot_device__agent__pb2.UpdateMessageResponse.FromString,
+                _registered_method=True)
+        self.UpdateAggregate = channel.unary_unary(
+                '/device_agent.deviceAgent/UpdateAggregate',
+                request_serializer=grpc__stubs_dot_device__agent__pb2.UpdateAggregateRequest.SerializeToString,
+                response_deserializer=grpc__stubs_dot_device__agent__pb2.UpdateAggregateResponse.FromString,
                 _registered_method=True)
 
 
@@ -94,6 +119,12 @@ class deviceAgentServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ChannelEventSubscription(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def WriteToChannel(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -107,6 +138,30 @@ class deviceAgentServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetTempAPIToken(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetTurnCredential(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateMessage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateMessage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateAggregate(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -130,6 +185,11 @@ def add_deviceAgentServicer_to_server(servicer, server):
                     request_deserializer=grpc__stubs_dot_device__agent__pb2.ChannelSubscriptionRequest.FromString,
                     response_serializer=grpc__stubs_dot_device__agent__pb2.ChannelSubscriptionResponse.SerializeToString,
             ),
+            'ChannelEventSubscription': grpc.unary_stream_rpc_method_handler(
+                    servicer.ChannelEventSubscription,
+                    request_deserializer=grpc__stubs_dot_device__agent__pb2.ChannelEventSubscriptionRequest.FromString,
+                    response_serializer=grpc__stubs_dot_device__agent__pb2.ChannelEventSubscriptionResponse.SerializeToString,
+            ),
             'WriteToChannel': grpc.unary_unary_rpc_method_handler(
                     servicer.WriteToChannel,
                     request_deserializer=grpc__stubs_dot_device__agent__pb2.ChannelWriteRequest.FromString,
@@ -144,6 +204,26 @@ def add_deviceAgentServicer_to_server(servicer, server):
                     servicer.GetTempAPIToken,
                     request_deserializer=grpc__stubs_dot_device__agent__pb2.TempAPITokenRequest.FromString,
                     response_serializer=grpc__stubs_dot_device__agent__pb2.TempAPITokenResponse.SerializeToString,
+            ),
+            'GetTurnCredential': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTurnCredential,
+                    request_deserializer=grpc__stubs_dot_device__agent__pb2.TurnCredentialRequest.FromString,
+                    response_serializer=grpc__stubs_dot_device__agent__pb2.TurnCredentialResponse.SerializeToString,
+            ),
+            'CreateMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateMessage,
+                    request_deserializer=grpc__stubs_dot_device__agent__pb2.CreateMessageRequest.FromString,
+                    response_serializer=grpc__stubs_dot_device__agent__pb2.CreateMessageResponse.SerializeToString,
+            ),
+            'UpdateMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateMessage,
+                    request_deserializer=grpc__stubs_dot_device__agent__pb2.UpdateMessageRequest.FromString,
+                    response_serializer=grpc__stubs_dot_device__agent__pb2.UpdateMessageResponse.SerializeToString,
+            ),
+            'UpdateAggregate': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateAggregate,
+                    request_deserializer=grpc__stubs_dot_device__agent__pb2.UpdateAggregateRequest.FromString,
+                    response_serializer=grpc__stubs_dot_device__agent__pb2.UpdateAggregateResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -239,6 +319,33 @@ class deviceAgent(object):
             _registered_method=True)
 
     @staticmethod
+    def ChannelEventSubscription(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/device_agent.deviceAgent/ChannelEventSubscription',
+            grpc__stubs_dot_device__agent__pb2.ChannelEventSubscriptionRequest.SerializeToString,
+            grpc__stubs_dot_device__agent__pb2.ChannelEventSubscriptionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def WriteToChannel(request,
             target,
             options=(),
@@ -309,6 +416,114 @@ class deviceAgent(object):
             '/device_agent.deviceAgent/GetTempAPIToken',
             grpc__stubs_dot_device__agent__pb2.TempAPITokenRequest.SerializeToString,
             grpc__stubs_dot_device__agent__pb2.TempAPITokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetTurnCredential(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/device_agent.deviceAgent/GetTurnCredential',
+            grpc__stubs_dot_device__agent__pb2.TurnCredentialRequest.SerializeToString,
+            grpc__stubs_dot_device__agent__pb2.TurnCredentialResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/device_agent.deviceAgent/CreateMessage',
+            grpc__stubs_dot_device__agent__pb2.CreateMessageRequest.SerializeToString,
+            grpc__stubs_dot_device__agent__pb2.CreateMessageResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/device_agent.deviceAgent/UpdateMessage',
+            grpc__stubs_dot_device__agent__pb2.UpdateMessageRequest.SerializeToString,
+            grpc__stubs_dot_device__agent__pb2.UpdateMessageResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateAggregate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/device_agent.deviceAgent/UpdateAggregate',
+            grpc__stubs_dot_device__agent__pb2.UpdateAggregateRequest.SerializeToString,
+            grpc__stubs_dot_device__agent__pb2.UpdateAggregateResponse.FromString,
             options,
             channel_credentials,
             insecure,

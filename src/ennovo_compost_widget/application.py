@@ -22,7 +22,8 @@ class EnnovoCompostWidgetApp(Application):
 
     async def setup(self):
         """Called once before processing any event."""
-        self.ui = EnnovoCompostWidgetUI()
+        self.ui = EnnovoCompostWidgetUI(position=self.config.widget_position.value)
+        self.ui_manager.set_position(self.config.widget_position.value)
         self.ui_manager.add_children(*self.ui.fetch())
 
     async def on_aggregate_update(self, event: AggregateUpdateEvent):

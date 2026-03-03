@@ -7,6 +7,7 @@ from pydoover.cloud.processor import SubscriptionConfig
 class EnnovoCompostWidgetConfig(config.Schema):
     def __init__(self):
         self.subscription = SubscriptionConfig(default="deployment_config")
+        self.widget_position = config.ApplicationPosition()
 
 
 def export():
