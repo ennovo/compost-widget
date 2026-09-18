@@ -22,7 +22,7 @@
         "container_registry_profile_id": null,
         "repo_branch": "main",
         "image_name": null,
-        "icon_url": "",
+        "icon_url": "https://cdn.jsdelivr.net/gh/getdoover/app-icons@126ec9f5ce22d9d5c100013a7da2740233f0720b/icons/customer-93952080091347467.png",
         "staging_config": {},
         "export_config_command": null,
         "run_command": null,
